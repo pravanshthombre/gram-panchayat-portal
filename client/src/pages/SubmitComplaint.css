@@ -1,0 +1,39 @@
+/* SubmitComplaint.css */
+.submit-page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg);
+}
+.submit-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-md);
+}
+.submit-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+.file-upload {
+  border: 2px dashed #d1d5db;
+  border-radius: var(--radius-md);
+  padding: var(--space-xl);
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+.file-upload:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.file-upload.has-file {
+  border-color: var(--primary);
+  background: #f0fdf4;
+  color: var(--primary);
+}

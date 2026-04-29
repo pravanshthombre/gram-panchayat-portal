@@ -1,0 +1,83 @@
+/* ComplaintCard.css */
+.complaint-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+  transition: var(--transition);
+  border: 1px solid rgba(0,0,0,0.04);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+.complaint-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.complaint-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+.complaint-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.1rem;
+  background: #f3f4f6;
+}
+.complaint-icon.water { background: #dbeafe; color: var(--cat-water); }
+.complaint-icon.electricity { background: #fef3c7; color: var(--cat-electricity); }
+.complaint-icon.agriculture { background: #dcfce7; color: var(--cat-agriculture); }
+.complaint-icon.sanitation { background: #fee2e2; color: var(--cat-sanitation); }
+.complaint-icon.infrastructure { background: #ede9fe; color: var(--cat-infrastructure); }
+.complaint-icon.other { background: #f3f4f6; color: var(--cat-other); }
+
+.complaint-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+.complaint-village {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+.complaint-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.complaint-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.complaint-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: auto;
+  padding-top: var(--space-sm);
+}
+.complaint-meta svg { flex-shrink: 0; }
+.complaint-response {
+  font-size: 0.78rem;
+  color: var(--primary);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

@@ -1,0 +1,46 @@
+/* PublicFeed.css */
+.hero-section {
+  background: var(--bg-hero);
+  padding: var(--space-2xl) var(--space-lg);
+  text-align: center;
+  color: var(--text-white);
+}
+.hero-logo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: var(--radius-full);
+  background: white;
+  padding: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  margin-bottom: var(--space-md);
+  animation: fadeIn 0.6s ease;
+}
+.hero-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: var(--space-sm);
+  letter-spacing: -0.02em;
+}
+.hero-subtitle {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin-bottom: var(--space-lg);
+  font-weight: 400;
+}
+.feed-filters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+}
+.feed-filters .form-select {
+  width: auto;
+  min-width: 160px;
+}
+.feed-count {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
