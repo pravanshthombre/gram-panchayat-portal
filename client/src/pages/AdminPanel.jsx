@@ -34,7 +34,7 @@ export default function AdminPanel() {
 
   useEffect(() => {
     Promise.all([API.get('/complaints'), API.get('/villages')])
-      .then(([c, v]) => { setComplaints(c.data); setVillages(v.data); })
+      .then(([c, v]) => { setComplaints(Array.isArray(c.data) ? c.data : []); setVillages(Array.isArray(v.data) ? v.data : []); })
       .catch(console.error).finally(() => setLoading(false));
   }, []);
 

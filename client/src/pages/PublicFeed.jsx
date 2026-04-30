@@ -25,8 +25,8 @@ export default function PublicFeed() {
       API.get('/complaints'),
       API.get('/villages')
     ]).then(([compRes, vilRes]) => {
-      setComplaints(compRes.data);
-      setVillages(vilRes.data);
+      setComplaints(Array.isArray(compRes.data) ? compRes.data : []);
+      setVillages(Array.isArray(vilRes.data) ? vilRes.data : []);
     }).catch(console.error)
       .finally(() => setLoading(false));
   }, []);

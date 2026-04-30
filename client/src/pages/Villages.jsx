@@ -17,7 +17,10 @@ export default function Villages() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    API.get('/villages').then(res => setVillages(res.data)).catch(console.error).finally(() => setLoading(false));
+    API.get('/villages')
+      .then(res => setVillages(Array.isArray(res.data) ? res.data : []))
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
   const handleSubmit = async (e) => {

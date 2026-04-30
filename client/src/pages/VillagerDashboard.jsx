@@ -32,7 +32,7 @@ export default function VillagerDashboard() {
   useEffect(() => {
     if (user) {
       API.get(`/complaints?user_id=${user.id}`)
-        .then((res) => setComplaints(res.data))
+        .then((res) => setComplaints(Array.isArray(res.data) ? res.data : []))
         .catch(console.error)
         .finally(() => setLoading(false));
     } else {
