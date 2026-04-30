@@ -1,9 +1,0 @@
-{
-  "name": "gram-panchayat-portal",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "install": "cd client && npm install",
-    "build": "cd client && npm run build && cd .. && rm -rf public && cp -R client/dist public"
-  }
-}
