@@ -28,17 +28,17 @@ app.use('/api/complaints', require('./routes/complaints'));
 app.use('/api/analytics', require('./routes/analytics'));
 
 // Notifications
-app.get('/api/notifications', authenticateToken, (req, res) => {
+app.get('/api/notifications', authenticateToken, async (req, res) => {
   try {
-    const notifs = prepareAll('SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 20', req.user.id);
-    const unread = prepareGet('SELECT COUNT(*) as c FROM notifications WHERE user_id = ? AND is_read = 0', req.user.id).c;
+    const notifs = await prepareAll('SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 20', req.user.id);
+    const unread = (await prepareGet('SELECT COUNT(*) as c FROM notifications WHERE user_id = ? AND is_read = 0', req.user.id)).c;
     res.json({ notifications: notifs, unread_count: unread });
   } catch (err) { res.status(500).json({ error: 'Server error.' }); }
 });
 
-app.put('/api/notifications/read', authenticateToken, (req, res) => {
+app.put('/api/notifications/read', authenticateToken, async (req, res) => {
   try {
-    runSql('UPDATE notifications SET is_read = 1 WHERE user_id = ?', req.user.id);
+    await runSql('UPDATE notifications SET is_read = 1 WHERE user_id = ?', req.user.id);
     res.json({ message: 'All marked as read.' });
   } catch (err) { res.status(500).json({ error: 'Server error.' }); }
 });

@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const { category, status, priority, village_id, user_id } = req.query;
     let sql = 'SELECT c.*, u.name as user_name, v.name as village_name FROM complaints c JOIN users u ON c.user_id = u.id JOIN villages v ON c.village_id = v.id WHERE 1=1';
@@ -25,46 +25,46 @@ router.get('/', (req, res) => {
     if (village_id && village_id !== 'all') { sql += ' AND c.village_id = ?'; params.push(parseInt(village_id)); }
     if (user_id) { sql += ' AND c.user_id = ?'; params.push(parseInt(user_id)); }
     sql += ' ORDER BY c.created_at DESC';
-    res.json(prepareAll(sql, ...params));
+    res.json(await prepareAll(sql, ...params));
   } catch (err) { console.error(err); res.status(500).json({ error: 'Server error.' }); }
 });
 
-router.post('/', authenticateToken, upload.single('photo'), (req, res) => {
+router.post('/', authenticateToken, upload.single('photo'), async (req, res) => {
   try {
     const { title, description, category, location, village_id } = req.body;
     if (!title || !description || !category) return res.status(400).json({ error: 'Title, description, category required.' });
     const photoUrl = req.file ? `/uploads/${req.file.filename}` : null;
     const vid = village_id || req.user.village_id;
-    const result = runSql('INSERT INTO complaints (title, description, category, photo_url, location, village_id, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)', title, description, category, photoUrl, location || '', parseInt(vid), req.user.id);
-    const complaint = prepareGet('SELECT c.*, u.name as user_name, v.name as village_name FROM complaints c JOIN users u ON c.user_id = u.id JOIN villages v ON c.village_id = v.id WHERE c.id = ?', result.lastInsertRowid);
+    const result = await runSql('INSERT INTO complaints (title, description, category, photo_url, location, village_id, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)', title, description, category, photoUrl, location || '', parseInt(vid), req.user.id);
+    const complaint = await prepareGet('SELECT c.*, u.name as user_name, v.name as village_name FROM complaints c JOIN users u ON c.user_id = u.id JOIN villages v ON c.village_id = v.id WHERE c.id = ?', result.lastInsertRowid);
     res.status(201).json({ message: 'Complaint submitted!', complaint });
   } catch (err) { console.error(err); res.status(500).json({ error: 'Server error.' }); }
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
-    const c = prepareGet('SELECT c.*, u.name as user_name, v.name as village_name FROM complaints c JOIN users u ON c.user_id = u.id JOIN villages v ON c.village_id = v.id WHERE c.id = ?', parseInt(req.params.id));
+    const c = await prepareGet('SELECT c.*, u.name as user_name, v.name as village_name FROM complaints c JOIN users u ON c.user_id = u.id JOIN villages v ON c.village_id = v.id WHERE c.id = ?', parseInt(req.params.id));
     if (!c) return res.status(404).json({ error: 'Not found.' });
     res.json(c);
   } catch (err) { res.status(500).json({ error: 'Server error.' }); }
 });
 
-router.put('/:id', authenticateToken, (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const { status, priority, admin_response } = req.body;
-    const existing = prepareGet('SELECT * FROM complaints WHERE id = ?', parseInt(req.params.id));
+    const existing = await prepareGet('SELECT * FROM complaints WHERE id = ?', parseInt(req.params.id));
     if (!existing) return res.status(404).json({ error: 'Not found.' });
     const newStatus = status || existing.status;
     const newPriority = priority || existing.priority;
     const newResponse = admin_response !== undefined ? admin_response : existing.admin_response;
-    runSql('UPDATE complaints SET status = ?, priority = ?, admin_response = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', newStatus, newPriority, newResponse, parseInt(req.params.id));
+    await runSql('UPDATE complaints SET status = ?, priority = ?, admin_response = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', newStatus, newPriority, newResponse, parseInt(req.params.id));
     if (status && status !== existing.status) {
-      runSql('INSERT INTO notifications (user_id, complaint_id, message) VALUES (?, ?, ?)', existing.user_id, existing.id, `Your complaint "${existing.title}" status updated to ${newStatus}`);
+      await runSql('INSERT INTO notifications (user_id, complaint_id, message) VALUES (?, ?, ?)', existing.user_id, existing.id, `Your complaint "${existing.title}" status updated to ${newStatus}`);
     }
     if (admin_response && admin_response !== existing.admin_response) {
-      runSql('INSERT INTO notifications (user_id, complaint_id, message) VALUES (?, ?, ?)', existing.user_id, existing.id, `Officer responded to "${existing.title}"`);
+      await runSql('INSERT INTO notifications (user_id, complaint_id, message) VALUES (?, ?, ?)', existing.user_id, existing.id, `Officer responded to "${existing.title}"`);
     }
-    const updated = prepareGet('SELECT c.*, u.name as user_name, v.name as village_name FROM complaints c JOIN users u ON c.user_id = u.id JOIN villages v ON c.village_id = v.id WHERE c.id = ?', parseInt(req.params.id));
+    const updated = await prepareGet('SELECT c.*, u.name as user_name, v.name as village_name FROM complaints c JOIN users u ON c.user_id = u.id JOIN villages v ON c.village_id = v.id WHERE c.id = ?', parseInt(req.params.id));
     res.json({ message: 'Complaint updated!', complaint: updated });
   } catch (err) { console.error(err); res.status(500).json({ error: 'Server error.' }); }
 });
