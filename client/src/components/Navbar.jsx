@@ -20,12 +20,18 @@ export default function Navbar() {
   const menuRef = useRef(null);
 
   useEffect(() => {
-    if (user) {
-      API.get('/notifications').then(res => {
-        setNotifications(res.data.notifications);
-        setUnreadCount(res.data.unread_count);
-      }).catch(() => {});
-    }
+    const fetchNotifs = () => {
+      if (user) {
+        API.get('/notifications').then(res => {
+          setNotifications(res.data.notifications);
+          setUnreadCount(res.data.unread_count);
+        }).catch(() => {});
+      }
+    };
+
+    fetchNotifs();
+    const interval = setInterval(fetchNotifs, 15000); // Check every 15 seconds
+    return () => clearInterval(interval);
   }, [user]);
 
   // Close menus on outside click
