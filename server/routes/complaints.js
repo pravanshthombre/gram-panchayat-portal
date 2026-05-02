@@ -35,10 +35,22 @@ router.post('/', authenticateToken, upload.single('photo'), async (req, res) => 
     if (!title || !description || !category) return res.status(400).json({ error: 'Title, description, category required.' });
     const photoUrl = req.file ? `/uploads/${req.file.filename}` : null;
     const vid = village_id || req.user.village_id;
-    const result = await runSql('INSERT INTO complaints (title, description, category, photo_url, location, village_id, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)', title, description, category, photoUrl, location || '', parseInt(vid), req.user.id);
-    const complaint = await prepareGet('SELECT c.*, u.name as user_name, v.name as village_name FROM complaints c LEFT JOIN users u ON c.user_id = u.id LEFT JOIN villages v ON c.village_id = v.id WHERE c.id = ?', result.lastInsertRowid);
+    if (!vid) return res.status(400).json({ error: 'Village selection is required.' });
+
+    const result = await runSql(
+      'INSERT INTO complaints (title, description, category, photo_url, location, village_id, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      title, description, category, photoUrl, location || '', parseInt(vid), req.user.id
+    );
+
+    const complaint = await prepareGet(
+      'SELECT c.*, u.name as user_name, v.name as village_name FROM complaints c LEFT JOIN users u ON c.user_id = u.id LEFT JOIN villages v ON c.village_id = v.id WHERE c.id = ?',
+      result.lastInsertRowid
+    );
     res.status(201).json({ message: 'Complaint submitted!', complaint });
-  } catch (err) { console.error(err); res.status(500).json({ error: 'Server error.' }); }
+  } catch (err) {
+    console.error('Submission Error:', err);
+    res.status(500).json({ error: 'Failed to save complaint. Please try again.' });
+  }
 });
 
 router.get('/:id', async (req, res) => {
