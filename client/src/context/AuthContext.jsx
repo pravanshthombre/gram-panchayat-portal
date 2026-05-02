@@ -25,17 +25,37 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-    const res = await API.post('/auth/login', { email, password });
-    localStorage.setItem('gp_token', res.data.token);
-    setUser(res.data.user);
-    return res.data;
+    try {
+      const res = await API.post('/auth/login', { email, password });
+      if (!res.data || !res.data.token) {
+        throw new Error('Invalid response from server.');
+      }
+      localStorage.setItem('gp_token', res.data.token);
+      setUser(res.data.user);
+      return res.data;
+    } catch (err) {
+      const message = err.response?.data?.error || err.message || 'Login failed. Server may be unavailable.';
+      const error = new Error(message);
+      error.response = err.response;
+      throw error;
+    }
   };
 
   const signup = async (data) => {
-    const res = await API.post('/auth/signup', data);
-    localStorage.setItem('gp_token', res.data.token);
-    setUser(res.data.user);
-    return res.data;
+    try {
+      const res = await API.post('/auth/signup', data);
+      if (!res.data || !res.data.token) {
+        throw new Error('Invalid response from server.');
+      }
+      localStorage.setItem('gp_token', res.data.token);
+      setUser(res.data.user);
+      return res.data;
+    } catch (err) {
+      const message = err.response?.data?.error || err.message || 'Registration failed. Server may be unavailable.';
+      const error = new Error(message);
+      error.response = err.response;
+      throw error;
+    }
   };
 
   const logout = () => {

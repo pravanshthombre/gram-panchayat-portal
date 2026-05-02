@@ -27,7 +27,7 @@ export default function Signup() {
       await signup({ ...form, village_id: form.village_id ? parseInt(form.village_id) : null });
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.error || 'Registration failed.');
+      setError(err.response?.data?.error || err.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }

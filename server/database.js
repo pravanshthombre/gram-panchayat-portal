@@ -1,8 +1,8 @@
 /**
- * database.js — PostgreSQL Database Setup & Seed Data (using pg)
+ * database.js — Supabase PostgreSQL Database Setup
  * 
  * Connects to Supabase PostgreSQL database with tables for users, villages,
- * complaints, and notifications. Seeds sample data matching the portal design.
+ * complaints, and notifications. Includes a compatibility layer for SQLite syntax.
  */
 
 const { Pool } = require('pg');
@@ -17,6 +17,14 @@ const pool = new Pool({
 });
 
 let isInitialized = false;
+
+/**
+ * Convert SQLite '?' parameters to Postgres '$1, $2...' format
+ */
+function convertSql(sql) {
+  let paramIndex = 1;
+  return sql.replace(/\?/g, () => `$${paramIndex++}`);
+}
 
 /**
  * Initialize the database: connect and create tables
@@ -87,7 +95,7 @@ async function initDatabase() {
 }
 
 async function seedDatabase() {
-  console.log('🌱 Seeding database with sample data...');
+  console.log('🌱 Seeding Supabase database with sample data...');
   const passwordHash = bcrypt.hashSync('password123', 10);
 
   // Villages
@@ -125,13 +133,7 @@ async function seedDatabase() {
   await pool.query("INSERT INTO notifications (user_id, complaint_id, message) VALUES (3, 2, 'Your complaint has been resolved')");
   await pool.query("INSERT INTO notifications (user_id, complaint_id, message) VALUES (2, 5, 'Officer responded to your complaint')");
 
-  console.log('✅ Sample data seeded: 3 villages, 3 users, 11 complaints, 3 notifications');
-}
-
-// Convert SQLite '?' parameters to Postgres '$1, $2...' format
-function convertSql(sql) {
-  let paramIndex = 1;
-  return sql.replace(/\?/g, () => `$${paramIndex++}`);
+  console.log('✅ Supabase database seeded');
 }
 
 async function prepareGet(sql, ...params) {
@@ -162,7 +164,6 @@ async function runSql(sql, ...params) {
   return { changes: result.rowCount };
 }
 
-// No-op to prevent existing calls from crashing
 function saveDatabase() {}
 
 module.exports = { initDatabase, prepareGet, prepareAll, runSql, saveDatabase };

@@ -4,6 +4,7 @@
  */
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import ErrorBoundary from './components/ErrorBoundary';
 import Navbar from './components/Navbar';
 import PublicFeed from './pages/PublicFeed';
 import Villages from './pages/Villages';
@@ -18,21 +19,23 @@ import './App.css';
 
 export default function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<PublicFeed />} />
-          <Route path="/villages" element={<Villages />} />
-          <Route path="/admin" element={<AdminPanel />} />
-          <Route path="/dashboard" element={<VillagerDashboard />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/submit-complaint" element={<SubmitComplaint />} />
-          <Route path="/complaint/:id" element={<ComplaintDetail />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<PublicFeed />} />
+            <Route path="/villages" element={<Villages />} />
+            <Route path="/admin" element={<AdminPanel />} />
+            <Route path="/dashboard" element={<VillagerDashboard />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/submit-complaint" element={<SubmitComplaint />} />
+            <Route path="/complaint/:id" element={<ComplaintDetail />} />
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
