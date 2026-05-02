@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: gram-panchayat-backend
+    runtime: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: DATABASE_URL
+        sync: false # This will make Render ask you for the value
+      - key: JWT_SECRET
+        generateValue: true # This creates a random secret key for you
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
