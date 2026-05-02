@@ -43,16 +43,8 @@ app.put('/api/notifications/read', authenticateToken, async (req, res) => {
   } catch (err) { res.status(500).json({ error: 'Server error.' }); }
 });
 
+// API Health Check
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
-
-// Serve frontend in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/dist')));
-  
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-  });
-}
 
 // Initialize database then start server
 initDatabase().then(() => {
