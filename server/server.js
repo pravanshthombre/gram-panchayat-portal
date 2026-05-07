@@ -46,6 +46,25 @@ app.put('/api/notifications/read', authenticateToken, async (req, res) => {
 // API Health Check
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
+// --- SERVE FRONTEND ---
+const distPath = path.join(__dirname, '../client/dist');
+app.use(express.static(distPath));
+
+// Catch-all route to serve React's index.html for any non-API routes
+app.get('*', (req, res) => {
+  // If the request is for an API route that wasn't caught, return 404
+  if (req.path.startsWith('/api')) {
+    return res.status(404).json({ error: 'API route not found' });
+  }
+  
+  const indexPath = path.join(distPath, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).send('Frontend not built. Run npm run build.');
+  }
+});
+
 // Initialize database then start server
 initDatabase().then(() => {
   app.listen(PORT, () => {
