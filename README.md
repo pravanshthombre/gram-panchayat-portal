@@ -89,7 +89,7 @@ A comprehensive full-stack solution designed to bridge the gap between village a
 | Role | Email | Password |
 | :--- | :--- | :--- |
 | **Admin** | `pravansh@gmail.com` | `password123` |
-| **Villager** | `pragti@gmail.com` | `password123` |
+| **Villager** | `prapti@gmail.com` | `password123` |
 | **Villager** | `vansh@gmail.com` | `password123` |
 
 ---
