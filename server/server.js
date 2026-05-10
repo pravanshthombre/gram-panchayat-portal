@@ -46,31 +46,14 @@ app.put('/api/notifications/read', authenticateToken, async (req, res) => {
 // API Health Check
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
-// --- SERVE FRONTEND ---
-const distPath = path.resolve(__dirname, '..', 'client', 'dist');
-console.log(`[Server] Serving frontend from: ${distPath}`);
+// Root route for backend status
+app.get('/', (req, res) => {
+  res.json({ message: 'Smart Gram Panchayat API is running properly on Render!' });
+});
 
-app.use(express.static(distPath));
-
-// Catch-all route to serve React's index.html for any non-API routes
-app.get('*', (req, res) => {
-  // If the request is for an API route that wasn't caught, return 404
-  if (req.path.startsWith('/api')) {
-    return res.status(404).json({ error: 'API route not found' });
-  }
-  
-  const indexPath = path.join(distPath, 'index.html');
-  if (fs.existsSync(indexPath)) {
-    res.sendFile(indexPath);
-  } else {
-    console.error(`[Error] Frontend index.html not found at: ${indexPath}`);
-    res.status(404).send(`
-      <h1>Frontend Not Built</h1>
-      <p>The server is running, but the frontend files were not found.</p>
-      <p><strong>Path searched:</strong> <code>${indexPath}</code></p>
-      <p>Please check your build logs on Render to ensure <code>npm run build</code> completed successfully.</p>
-    `);
-  }
+// Catch-all route for unhandled API endpoints
+app.use((req, res) => {
+  res.status(404).json({ error: 'Endpoint not found' });
 });
 
 // Initialize database then start server
