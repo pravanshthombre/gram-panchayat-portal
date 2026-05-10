@@ -4,7 +4,17 @@
  */
 import axios from 'axios';
 
-const baseUrl = import.meta.env.VITE_API_URL || '/api';
+let envUrl = import.meta.env.VITE_API_URL || '';
+// Strip trailing slash if present
+if (envUrl.endsWith('/')) {
+  envUrl = envUrl.slice(0, -1);
+}
+// Append /api if missing
+if (envUrl && !envUrl.endsWith('/api')) {
+  envUrl += '/api';
+}
+
+const baseUrl = envUrl || '/api';
 console.log('DEBUG: API Base URL is:', baseUrl);
 
 const API = axios.create({ baseURL: baseUrl });
