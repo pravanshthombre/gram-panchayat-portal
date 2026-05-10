@@ -47,7 +47,9 @@ app.put('/api/notifications/read', authenticateToken, async (req, res) => {
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
 // --- SERVE FRONTEND ---
-const distPath = path.join(__dirname, '../client/dist');
+const distPath = path.resolve(__dirname, '..', 'client', 'dist');
+console.log(`[Server] Serving frontend from: ${distPath}`);
+
 app.use(express.static(distPath));
 
 // Catch-all route to serve React's index.html for any non-API routes
@@ -61,7 +63,13 @@ app.get('*', (req, res) => {
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.status(404).send('Frontend not built. Run npm run build.');
+    console.error(`[Error] Frontend index.html not found at: ${indexPath}`);
+    res.status(404).send(`
+      <h1>Frontend Not Built</h1>
+      <p>The server is running, but the frontend files were not found.</p>
+      <p><strong>Path searched:</strong> <code>${indexPath}</code></p>
+      <p>Please check your build logs on Render to ensure <code>npm run build</code> completed successfully.</p>
+    `);
   }
 });
 
