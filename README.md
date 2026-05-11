@@ -3,8 +3,8 @@
 A comprehensive full-stack solution designed to bridge the gap between village administration (Gram Panchayat) and citizens (Villagers). This portal streamlines complaint management, village analytics, and administrative transparency.
 
 ## 🚀 Live Demo
-- **Frontend (Vercel):** [Your Vercel URL Here]
-- **Backend API (Render):** [Your Render URL Here]
+- **Frontend (Vercel):** `https://<your-frontend>.vercel.app`
+- **Backend API (Render):** `https://<your-backend>.onrender.com`
 
 ---
 
@@ -82,6 +82,7 @@ A comprehensive full-stack solution designed to bridge the gap between village a
 - **Runtime:** `Node`
 - **Build Command:** `npm install && npm run build`
 - **Start Command:** `npm start`
+- **Required environment variables:** `DATABASE_URL`, `JWT_SECRET`
 
 ---
 
@@ -91,6 +92,19 @@ A comprehensive full-stack solution designed to bridge the gap between village a
 | :--- | :--- | :--- |
 | **Admin** | Set your own admin user in your database | Set your own password |
 | **Villager** | Set your own villager user in your database | Set your own password |
+
+---
+
+## 🧪 Development Quality Checks
+
+- Run lint checks:
+  ```bash
+  npm run lint
+  ```
+- Run backend tests:
+  ```bash
+  npm run test
+  ```
 
 ---
 

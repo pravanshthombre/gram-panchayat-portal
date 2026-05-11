@@ -6,9 +6,12 @@
     "postinstall": "npm --prefix server install && npm --prefix client install && npm run build",
     "build": "npm --prefix client run build",
     "start": "npm --prefix server start",
-    "dev": "concurrently \"npm --prefix server run dev\" \"npm --prefix client run dev\""
+    "dev": "concurrently \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
+    "lint": "eslint \"server/**/*.js\" \"client/src/**/*.{js,jsx}\"",
+    "test": "npm --prefix server test"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "eslint": "^10.3.0"
   }
 }

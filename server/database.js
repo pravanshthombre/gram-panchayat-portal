@@ -18,6 +18,11 @@ const pool = new Pool({
 
 let isInitialized = false;
 
+function shouldSeedSampleData() {
+  if (process.env.ALLOW_DB_SEED === 'true') return true;
+  return process.env.NODE_ENV !== 'production';
+}
+
 /**
  * Convert SQLite '?' parameters to Postgres '$1, $2...' format
  */
@@ -85,7 +90,11 @@ async function initDatabase() {
   const userCount = parseInt(result.rows[0].count, 10);
 
   if (userCount === 0) {
-    await seedDatabase();
+    if (shouldSeedSampleData()) {
+      await seedDatabase();
+    } else {
+      console.log('ℹ️  Database is empty and sample seeding is disabled in production');
+    }
   } else {
     console.log('ℹ️  Database already has data, skipping seed');
   }
