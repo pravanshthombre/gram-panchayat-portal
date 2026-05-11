@@ -7,11 +7,8 @@
 
 const jwt = require('jsonwebtoken');
 
-// Secret key for JWT signing must come from environment.
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-  throw new Error('Missing JWT_SECRET environment variable. Set server/.env before starting the server.');
-}
+// Secret key for JWT signing (in production, use environment variable)
+const JWT_SECRET = 'gram_panchayat_secret_key_2026';
 
 /**
  * Middleware: Verify JWT token

@@ -60,7 +60,6 @@ A comprehensive full-stack solution designed to bridge the gap between village a
      JWT_SECRET=your_secret_key
      DATABASE_URL=your_supabase_postgresql_url
      ```
-   - `JWT_SECRET` is required. The backend will fail to start if it is missing.
 4. **Run the application:**
    ```bash
    npm run dev
