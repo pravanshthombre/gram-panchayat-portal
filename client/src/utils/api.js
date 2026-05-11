@@ -15,7 +15,6 @@ if (envUrl && !envUrl.endsWith('/api')) {
 }
 
 const baseUrl = envUrl || '/api';
-console.log('DEBUG: API Base URL is:', baseUrl);
 
 const API = axios.create({ baseURL: baseUrl });
 

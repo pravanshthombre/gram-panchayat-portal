@@ -60,6 +60,7 @@ A comprehensive full-stack solution designed to bridge the gap between village a
      JWT_SECRET=your_secret_key
      DATABASE_URL=your_supabase_postgresql_url
      ```
+   - `JWT_SECRET` is mandatory. Backend startup will fail if it is missing.
 4. **Run the application:**
    ```bash
    npm run dev
@@ -88,9 +89,8 @@ A comprehensive full-stack solution designed to bridge the gap between village a
 
 | Role | Email | Password |
 | :--- | :--- | :--- |
-| **Admin** | `pravansh@gmail.com` | `password123` |
-| **Villager** | `prapti@gmail.com` | `password123` |
-| **Villager** | `vansh@gmail.com` | `password123` |
+| **Admin** | Set your own admin user in your database | Set your own password |
+| **Villager** | Set your own villager user in your database | Set your own password |
 
 ---
 
