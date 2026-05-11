@@ -3,7 +3,7 @@
  */
 const express = require('express');
 const { prepareGet, prepareAll, runSql } = require('../database');
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
   } catch (err) { console.error(err); res.status(500).json({ error: 'Server error.' }); }
 });
 
-router.post('/', authenticateToken, async (req, res) => {
+router.post('/', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { name, district, state, pincode } = req.body;
     if (!name || !district || !pincode) return res.status(400).json({ error: 'Name, district, pincode required.' });

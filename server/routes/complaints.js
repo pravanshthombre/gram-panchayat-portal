@@ -63,17 +63,47 @@ router.get('/:id', async (req, res) => {
 
 router.put('/:id', authenticateToken, async (req, res) => {
   try {
-    const { status, priority, admin_response } = req.body;
+    const { title, description, category, location, status, priority, admin_response } = req.body;
     const existing = await prepareGet('SELECT * FROM complaints WHERE id = ?', parseInt(req.params.id));
     if (!existing) return res.status(404).json({ error: 'Not found.' });
-    const newStatus = status || existing.status;
-    const newPriority = priority || existing.priority;
-    const newResponse = admin_response !== undefined ? admin_response : existing.admin_response;
-    await runSql('UPDATE complaints SET status = ?, priority = ?, admin_response = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', newStatus, newPriority, newResponse, parseInt(req.params.id));
-    if (status && status !== existing.status) {
+
+    const isAdmin = req.user.role === 'admin';
+    const isOwner = existing.user_id === req.user.id;
+
+    if (!isAdmin && !isOwner) {
+      return res.status(403).json({ error: 'You are not authorized to update this complaint.' });
+    }
+
+    // Villagers can only edit basic complaint details on their own complaints.
+    if (!isAdmin && (status !== undefined || priority !== undefined || admin_response !== undefined)) {
+      return res.status(403).json({ error: 'Only admins can update status, priority, or admin response.' });
+    }
+
+    const newTitle = title !== undefined ? title : existing.title;
+    const newDescription = description !== undefined ? description : existing.description;
+    const newCategory = category !== undefined ? category : existing.category;
+    const newLocation = location !== undefined ? location : existing.location;
+    const newStatus = isAdmin ? (status || existing.status) : existing.status;
+    const newPriority = isAdmin ? (priority || existing.priority) : existing.priority;
+    const newResponse = isAdmin
+      ? (admin_response !== undefined ? admin_response : existing.admin_response)
+      : existing.admin_response;
+
+    await runSql(
+      'UPDATE complaints SET title = ?, description = ?, category = ?, location = ?, status = ?, priority = ?, admin_response = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      newTitle,
+      newDescription,
+      newCategory,
+      newLocation,
+      newStatus,
+      newPriority,
+      newResponse,
+      parseInt(req.params.id)
+    );
+    if (isAdmin && status && status !== existing.status) {
       await runSql('INSERT INTO notifications (user_id, complaint_id, message) VALUES (?, ?, ?)', existing.user_id, existing.id, `Your complaint "${existing.title}" status updated to ${newStatus}`);
     }
-    if (admin_response && admin_response !== existing.admin_response) {
+    if (isAdmin && admin_response && admin_response !== existing.admin_response) {
       await runSql('INSERT INTO notifications (user_id, complaint_id, message) VALUES (?, ?, ?)', existing.user_id, existing.id, `Officer responded to "${existing.title}"`);
     }
     const updated = await prepareGet('SELECT c.*, u.name as user_name, v.name as village_name FROM complaints c LEFT JOIN users u ON c.user_id = u.id LEFT JOIN villages v ON c.village_id = v.id WHERE c.id = ?', parseInt(req.params.id));
